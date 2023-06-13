@@ -21,7 +21,7 @@ public class Main {
 
             System.out.println("Enter the admin password: ");
             String adminPassword = input.nextLine();
-            if (!adminPassword.equals("gachaaddict033871429124")) {
+            if (!adminPassword.equals("nyaichinisan")) {
                 clearScreen();
                 System.out.println("Incorrect password. Please try again.");
             } else {
@@ -32,7 +32,8 @@ public class Main {
 
         if (isAdmin) {
             // Admin stuff
-            System.out.println("Logged in as admin\n");
+            clearScreen();
+            System.out.println("Logged in as admin");
             boolean adminMenu = true;
             while(adminMenu){
                 System.out.println("=========Admin Menu=========");
@@ -41,26 +42,36 @@ public class Main {
                 System.out.println("|| [3] || Take Item        |");
                 System.out.println("|| [4] || Initialize Item  |");
                 System.out.println("|| [5] || Quit             |");
-                System.out.println("============================\n");
+                System.out.println("============================");
                 System.out.println("What would you like to do?");
 
                 String choice = input.nextLine();
                 switch (choice) {
-                    case "1" -> mainInstance.reviewRequest();
-                    case "2" -> mainInstance.requestItemEnter();
-                    case "3" -> mainInstance.requestItemTake();
-                    case "4" -> {
+                    case "1":
+                        mainInstance.reviewRequest();
+                        break;
+                    case "2":
+                        mainInstance.requestItemEnter();
+                        break;
+                    case "3":
+                        mainInstance.requestItemTake();
+                        break;
+                    case "4":
                         System.out.println("Enter the name of the item to be initialized.");
                         String name = input.nextLine();
                         storage.initializeItem(name);
-                    }
-                    case "5" -> adminMenu = false;
-                    default -> System.out.println("Invalid input.");
+                        break;
+                    case "5":
+                        adminMenu = false;
+                        break;
+                    default:
+                        System.out.println("Invalid input.\n");
                 }
             }
         } else {
             // User stuff
-            System.out.println("Logged in as a user.\n");
+            clearScreen();
+            System.out.println("Logged in as a user.");
             boolean userMenu = true;
             while(userMenu){
                 System.out.println("=========User Menu=========");
@@ -72,10 +83,18 @@ public class Main {
 
                 String choice = input.nextLine();
                 switch (choice) {
-                    case "1" -> mainInstance.requestItemEnter();
-                    case "2" -> mainInstance.requestItemTake();
-                    case "3" -> userMenu = false;
-                    default -> System.out.println("Invalid input.");
+                    case "1":
+                        mainInstance.requestItemEnter();
+                        break;
+                    case "2":
+                        mainInstance.requestItemTake();
+                        break;
+                    case "3":
+                        userMenu = false;
+                        break;
+                    default:
+                        System.out.println("Invalid input.\n");
+                        break;
                 }
             }
         }
@@ -84,11 +103,12 @@ public class Main {
     }
 
     public void requestItemEnter(){
+        clearScreen();
         Scanner in = new Scanner(System.in);
         String[] keys = storage.Stock.keySet().toArray(new String[0]);
         int i = 1;
         for (String key: keys){
-            System.out.println(i + " " + storage.Stock.get(key));
+            System.out.println(i + ") " + storage.Stock.get(key).name);
             i++;
         }
         String input;
@@ -96,8 +116,14 @@ public class Main {
         input = in.next();
         int keyNum;
         try {
-            System.out.println("Input entered is invalid");
+            clearScreen();
             keyNum = Integer.parseInt(input);
+            keyNum--;
+            if(keyNum < 0 || keyNum >= keys.length){
+                clearScreen();
+                System.out.println("Invalid index entered.\n");
+                return;
+            }
         } catch (Exception e) {
             return;
         }
@@ -107,12 +133,14 @@ public class Main {
         try {
             amt = Integer.parseInt(input);
         } catch (Exception e) {
-            System.out.println("Input entered is invalid");
+            clearScreen();
+            System.out.println("Input entered is invalid.\n");
             return;
         }
         System.out.println("Enter your name");
         String name = in.next();
         storage.addRequest(keys[keyNum], amt, name, new Date());
+        keyNum = keyNum--;
         System.out.println("Request Successfully added");
     }
     public void requestItemTake(){
@@ -120,7 +148,7 @@ public class Main {
         String[] keys = storage.Stock.keySet().toArray(new String[0]);
         int i = 1;
         for (String key: keys){
-            System.out.println(i + " " + storage.Stock.get(key));
+            System.out.println(i + ") " + storage.Stock.get(key).name);
             i++;
         }
         String input;
@@ -129,8 +157,15 @@ public class Main {
         int keyNum;
         try {
             keyNum = Integer.parseInt(input);
+            keyNum--;
         } catch (Exception e) {
-            System.out.println("Input entered is invalid");
+            clearScreen();
+            System.out.println("Input entered is invalid.\n");
+            return;
+        }
+        if(keyNum < 0 || keyNum >= keys.length){
+            clearScreen();
+            System.out.println("Invalid index entered.\n");
             return;
         }
         System.out.println("Enter the number of items to retrieve");
@@ -139,7 +174,8 @@ public class Main {
         try {
             amt = Integer.parseInt(input);
         } catch (Exception e) {
-            System.out.println("Input entered is invalid");
+            clearScreen();
+            System.out.println("Input entered is invalid.\n");
             return;
         }
         System.out.println("Enter your name");
@@ -152,8 +188,12 @@ public class Main {
     }
     public void reviewRequest(){
         LinkedList<String> requests = storage.getRequests();
-        for (int i = 0; i <= requests.toArray().length; i++){
-            System.out.println((i+1) + " " + requests.get(i));
+        if(requests.isEmpty()){
+            System.out.println("No requests to review at the moment.");
+            return;
+        }
+        for (int i = 0; i < requests.size(); i++){
+            System.out.println((i+1) + ".) " + requests.get(i));
         }
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the index of the request to approve/reject");
@@ -161,8 +201,13 @@ public class Main {
         int keyNum;
         try {
             keyNum = Integer.parseInt(input);
+            keyNum--;
         } catch (Exception e) {
-            System.out.println("Input entered is invalid");
+            System.out.println("Input entered is invalid.\n");
+            return;
+        }
+        if(keyNum < 0 || keyNum >= requests.size()) {
+            System.out.println("Invalid index entered.\n");
             return;
         }
         System.out.println("Would you like to [A]pprove or [R]eject this request?");
@@ -250,9 +295,11 @@ class StorageLHM{
 
     public boolean initializeItem(String name){
         if (Stock.containsKey(name)){
+            System.out.println("Your item, " + name + ", cannot be initialized.");
             return false;
         }
         Stock.put(name, new Item(name));
+        System.out.println("Your item, " + name + ", has been initialized.");
         return true;
     }
 }
