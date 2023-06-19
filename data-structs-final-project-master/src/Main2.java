@@ -22,25 +22,24 @@ public class Main2 {
             storage.initializeItem(String.valueOf(itemName));
             time = System.nanoTime() - prevTime;
         }
-        System.out.println(time + "ns");
+        System.out.println("Add entry: " + time + "ns");
         Object[] keys = storage.Stock.keySet().toArray();
         for (int i = 0; i < num; i++) {
-            double prevTime = System.nanoTime();
+
             String item = keys[random.nextInt(keys.length)].toString();
             int amt = random.nextInt();
             storage.addRequest(item, amt, "Kenneth", new Date());
-            time = System.nanoTime() - prevTime;
         }
-        System.out.println(time + "ns");
-
-        LinkedList<String> requests = storage.getRequests();
         double prevTime = System.nanoTime();
+        LinkedList<String> requests = storage.getRequests();
+        int i = random.nextInt(requests.size());
+        System.out.println(requests.get(i));
+        time = System.nanoTime() - prevTime;
+        System.out.println("Find entry: " + time + "ns");
+        prevTime = System.nanoTime();
         storage.approveRequest(requests.get(random.nextInt(requests.size())).split(" ")[0]);
         time = System.nanoTime() - prevTime;
-        System.out.println(time + "ns");
-        for(int i = 1; i < num - 1; i++) {
-            storage.approveRequest(requests.get(random.nextInt(requests.size())).split(" ")[0]);
-        }
+        System.out.println("Remove entry: " + time + "ns");
     }
     public static void benchmarkTM(){
         StorageTM storage = new StorageTM();

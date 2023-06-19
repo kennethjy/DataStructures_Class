@@ -38,10 +38,12 @@ public class Main {
             while(adminMenu){
                 System.out.println("=========Admin Menu=========");
                 System.out.println("|| [1] || Review Request   |");
-                System.out.println("|| [2] || Request Item     |");
-                System.out.println("|| [3] || Take Item        |");
-                System.out.println("|| [4] || Initialize Item  |");
-                System.out.println("|| [5] || Quit             |");
+                System.out.println("|| [2] || View Requests    |");
+                System.out.println("|| [3] || View Request     |");
+                System.out.println("|| [4] || Request Item     |");
+                System.out.println("|| [5] || Take Item        |");
+                System.out.println("|| [6] || Initialize Item  |");
+                System.out.println("|| [7] || Quit             |");
                 System.out.println("============================");
                 System.out.println("What would you like to do?");
 
@@ -51,17 +53,23 @@ public class Main {
                         mainInstance.reviewRequest();
                         break;
                     case "2":
-                        mainInstance.requestItemEnter();
+                        mainInstance.viewRequests();
                         break;
                     case "3":
-                        mainInstance.requestItemTake();
+                        mainInstance.viewRequest();
                         break;
                     case "4":
+                        mainInstance.requestItemEnter();
+                        break;
+                    case "5":
+                        mainInstance.requestItemTake();
+                        break;
+                    case "6":
                         System.out.println("Enter the name of the item to be initialized.");
                         String name = input.nextLine();
                         storage.initializeItem(name);
                         break;
-                    case "5":
+                    case "7":
                         adminMenu = false;
                         break;
                     default:
@@ -184,6 +192,33 @@ public class Main {
             System.out.println("Request Successfully added");
         } else {
             System.out.println("Not enough items in stock");
+        }
+    }
+
+    public void viewRequests(){
+        LinkedList<String> requests = storage.getRequests();
+        if(requests.isEmpty()){
+            System.out.println("No requests to view at the moment.");
+            return;
+        }
+        for (int i = 0; i < requests.size(); i++){
+            System.out.println((i+1) + ".) " + requests.get(i));
+        }
+    }
+
+    public void viewRequest(){
+        LinkedList<String> requests = storage.getRequests();
+        if(requests.isEmpty()){
+            System.out.println("No requests to view at the moment.");
+            return;
+        }
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter index of request to search");
+        int i = input.nextInt();
+        if (requests.size() > i){
+            System.out.println(requests.get(i));
+        } else {
+            System.out.println("Request not found");
         }
     }
     public void reviewRequest(){
